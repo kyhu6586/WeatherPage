@@ -3,9 +3,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <title>Boulder's Weather</title>
-<link rel='icon' href='../resources/img/favicon.ico' type='image/x-icon'/>
+<link rel='icon' href='../../resources/img/favicon.ico' type='image/x-icon'/>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-<link href="../resources/css/my_style.css" rel="stylesheet">
+<link href="../../resources/css/my_style.css" rel="stylesheet">
 <style>
 #thermometer_inner { width: 95%; height: 20%; margin:2.5%; background: red; position:absolute; bottom:0;}
 #thermometer_outer {height:400px; position:relative;}
@@ -14,8 +14,8 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-<a class="navbar-brand" href="ProjWebsite.html">
-<img class="rounded-circle" src="../resources/img/cu_boulder_logo.jpg" alt="" width="30" height="30">
+<a class="navbar-brand" href="weather">
+<img class="rounded-circle" src="../../resources/img/Flatirons.jpg" alt="" width="30" height="30">
 </a>
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 <span class="navbar-toggler-icon"></span>
@@ -23,13 +23,13 @@
 <div class="collapse navbar-collapse" id="navbarText">
 <ul class="navbar-nav mr-auto">
 <li class="nav-item active">
-<a class="nav-link" href="ProjWebsite.html">Weather</a>
+<a class="nav-link" href="weather">Weather</a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="AdminLogin.html">Administrator Login</a>
+<a class="nav-link" href="/">Administrator Login</a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="AdminSignup.html">Administrator Signup</a>
+<a class="nav-link" href="register">Administrator Signup</a>
 </li>
 </ul>
 <div class="form-inline my-2 my-lg-0">
@@ -43,10 +43,10 @@
 <hr>
 <div class="row">
 <div class="col-6">
-<div class="card" >
+<div class="card" style="height:50%" >
 <div id="thermometer_outer">
-<div id="thermometer_inner"><p id="temp_today" class="h3"> <% if(weather_data){ %>
-<%- weather_data.temp%>
+<div id="thermometer_inner"><p id="temp_today" class="h3"> <% if(weather_data[weather_data.length-1]){ %>
+<%- weather_data[weather_data.length-1].temp%>
 <% } %> F</p></div>
 </div>
 <div class="card-body">
@@ -55,30 +55,30 @@
 </div>
 </div>
 <div class="col-6">
-<div class="card " style="height:100%;">
+<div class="card " style="height:50%;">
 <div class="my-auto">
-<p class="h3" style="padding-left:15px;">Temperature: <span id="temp"><% if(weather_data){ %>
-<%- weather_data.temp%>
+<p class="h3" style="padding-left:15px;">Temperature: <span style="color:DodgerBlue" text id="temp"><% if(weather_data[weather_data.length-1]){ %>
+<%- weather_data[weather_data.length-1].temp%>
 <% } %> F</span><br>
 <br>
-Altitude:<span></span><% if(weather_data){ %>
-<%- weather_data.alt%>
-<% } %> ft<br>
+Altitude:<span style="color:DodgerBlue"><% if(weather_data.length-1){ %>
+<%- weather_data[weather_data.length-1].alt%>
+<% } %> ft</span><br>
 <br>
-Humidity: <span id="humidity_today"><% if(weather_data){ %>
-<%- weather_data.hum%>
-<% } %></span> % <br>
+Humidity: <span style="color:DodgerBlue" id="humidity_today"><% if(weather_data[weather_data.length-1]){ %>
+<%- weather_data[weather_data.length-1].hum%>
+<% } %> %</span><br>
 <br>
-Pressure: <span id="press_today"><% if(weather_data){ %>
-<%- weather_data.pressure%>
-<% } %></span> Pa <br>
+Pressure: <span style="color:DodgerBlue" id="press_today"><% if(weather_data[weather_data.length-1]){ %>
+<%- weather_data[weather_data.length-1].pressure%>
+<% } %> Pa</span><br>
 <br>
-C02: <span id="CO2_today"><% if(weather_data){ %>
-<%- weather_data.c02%>
+C02: <span style="color:DodgerBlue" id="CO2_today"><% if(weather_data[weather_data.length-1]){ %>
+<%- weather_data[weather_data.length-1].c02%>
 <% } %></span><br>
 <br>
-TVOC: <span><% if(weather_data){ %>
-<%- weather_data.tvoc%>
+TVOC: <span style="color:DodgerBlue"><% if(weather_data[weather_data.length-1]){ %>
+<%- weather_data[weather_data.length-1].tvoc%>
 <% } %></span></p>
 </div>
 </div>
@@ -87,16 +87,25 @@ TVOC: <span><% if(weather_data){ %>
 <br>
 <div class="row">
 <div class="col-6">
-<div class="card" style="height:100%;">
+<div class="card" style="height:50%;">
 <div class="my-auto">
 <img id="picture" src="" alt="Outside Today">
 </div>
 </div>
 </div>
 <div class="col-6">
-<div class="card" style="height:100%;">
+<div class="card" style="height:50%;">
 <div class="my-auto">
-<p class="h3" style="padding-left:15px;">Advisory Today: <span id="warnings"> Undefined</span>
+<p class="h3" style="padding-left:15px;">Advisory Today:<br><br> 
+<span id="warnings"> <% if(weather_data[weather_data.length-1]){
+	var warn = ''; 
+	if(weather_data[weather_data.length-1].temp > 75){
+	warn += '<span style="color:#FFAF0A">Hot Conditions</span><br><br>';}
+	if(weather_data[weather_data.length-1].hum > 50){
+	warn += '<span style="color:#FFAF0A">High Humidity</span><br><br>';}
+	if(weather_data[weather_data.length-1].tvoc > 0){
+	warn += '<span style="color:#FFAF0A">Poor Air Quality</span><br><br>';}%>
+	<%-warn%><%}%></span>
 </div>
 </div>
 </div>
@@ -106,6 +115,5 @@ TVOC: <span><% if(weather_data){ %>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script>
-
 </script>
 </body>

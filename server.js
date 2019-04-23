@@ -58,10 +58,23 @@ app.use(express.static(__dirname + '/'));//This line is necessary for us to use 
   			and show the total number of wins/losses for the season.
 
 ************************************/
+var express = require('express');
+var parser = require('body-parser');
+var path = require('path');
+var app = express();
+app.use(parser.urlencoded({extended:false}))
+app.use(parser.json())
 
+app.use(function(req,res,next){
+  res.locals.userValue = null;
+  next();
+})
+
+app.set('view engine', 'ejs');
+//app.set('views',path.join(__dirname,'appviews'))
 // login page
 app.get('/', function(req, res) {
-	res.render('pages/ProjWebsite',{
+	res.render('pages/Login',{
 		local_css:"signin.css",
 		my_title:"Login Page"
 	});
@@ -69,14 +82,14 @@ app.get('/', function(req, res) {
 
 // registration page
 app.get('/register', function(req, res) {
-	res.render('pages/AdminSignup',{
+	res.render('pages/Registration',{
 		my_title:"Registration Page"
 	});
 });
 
 // weather page
 app.get('/weather', function(req, res) {
-	var weather_query = 'select * from weatherdata3 limit 1;';
+	var weather_query = 'select * from weatherdata3;';
 
 
   db.task('get-everything', task => {
@@ -97,6 +110,19 @@ app.get('/weather', function(req, res) {
     });
 
 });
+app.post('member/add', function(req,res){
+  var member = {
+    first : req.body.fname,
+    last:req.body.lname,
+    username : req.body.username,
+    password : req.body.password
+  }
+  console.log(member);
+  res.render('pages/AdminLogin',{
+    userValue : member,
+    my_title : "Login Page"
+  });
+})
 
 //app.listen(process.env.PORT);
 app.listen(3000);
