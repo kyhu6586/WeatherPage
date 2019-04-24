@@ -35,19 +35,36 @@
 	</nav>
     <form class="form-signin">
     	<h1>Login Page</h1>
+    	<%-user_data[0].username%>
 	  	<img src="../../resources/img/Flatirons.jpg" alt="" width="30%" height="30%">
 	  	<hr>
 	  	<label for="inputEmail" class="sr-only">Username</label>
-	  	<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+	  	<input type="email" oninput="checkUser(<%user_data%>)" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
 	  	<br>
 	  	<label for="inputPassword" class="sr-only">Password</label>
-	  	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+	  	<input type="password" oninput="checkUser(<%user_data%>)" id="inputPassword" class="form-control" placeholder="Password" required>
 	  	<br>
 	  	<br>
-	  	<button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+	  	<a class="btn btn-lg btn-primary" id="Signin" href="">Sign in</a>
 	  	<a class="btn btn-lg btn-primary" href="register">Register</a>
 	</form>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	<script>
+		function checkUser(arr){
+			var inputuser = document.getElementById("inputUsername");
+			var inputpass = document.getElementById("inputPassword");
+			var correct = 0;
+			for(i=0; i<arr.length; i++){
+				if((arr[i].username == inputuser.value) && (arr[i].password == inputpass.value)){
+					document.getElementById("Signin").href = "/weather";
+					break;
+				}
+				else{
+					document.getElementById("Signin").href = "";
+				}
+			}
+		}
+	</script>
 </body>

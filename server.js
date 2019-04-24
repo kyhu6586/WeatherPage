@@ -74,12 +74,27 @@ app.set('view engine', 'ejs');
 //app.set('views',path.join(__dirname,'appviews'))
 // login page
 app.get('/', function(req, res) {
-	res.render('pages/Login',{
-		local_css:"signin.css",
-		my_title:"Login Page"
-	});
-});
+  var user_query = 'select * from users;';
 
+
+  db.task('get-everything', task => {
+        return task.batch([
+            task.any(user_query),
+        ]);
+    })
+    .then(data => {
+      console.log(data[0]),
+      res.render('pages/Login',{
+        my_title: "Login Page",
+        user_data: data[0],
+      })
+    })
+    .catch(error => {
+        // display error message in case an error
+          console.log("ERROR: " + error);
+    });
+
+});
 // registration page
 app.get('/register', function(req, res) {
 	res.render('pages/Registration',{
