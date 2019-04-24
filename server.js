@@ -95,6 +95,47 @@ app.get('/', function(req, res) {
     });
 
 });
+
+app.post('/checkLogin', function(req, res) {
+  var user_query = 'select * from users;';
+  var correct = 0;
+  console.log(req.body)
+
+  db.task('get-everything', task => {
+        return task.batch([
+            task.any(user_query),
+        ]);
+    })
+    .then(data => {
+      console.log(data[0])
+      for (var i = 0; i<data[0].length; i++){
+        if ((req.body.inputUsername ==  data[0][i].username) && 
+        (req.body.inputPassword ==  data[0][i].password)){
+          correct = 1;
+          break;
+        }}
+
+      if (correct == 1){
+      	
+      	console.log("This works")
+        res.redirect('/weather');
+
+       //redirect to weather page here
+
+      }else{
+      	//Failed login
+        res.redirect('/')
+      	//render the failed page
+      	//display error message here
+      }
+      // 
+    })
+    .catch(error => {
+        // display error message in case an error
+          console.log("ERROR: " + error);
+    });
+
+});
 // registration page
 app.get('/register', function(req, res) {
 	res.render('pages/Registration',{
@@ -116,7 +157,7 @@ app.get('/weather', function(req, res) {
       console.log(data[0]),
     	res.render('pages/ProjWebsite',{
 				my_title: "Weather Page",
-				weather_data: data[0],
+				weather_data: data[0]
 			})
     })
     .catch(error => {
@@ -125,18 +166,25 @@ app.get('/weather', function(req, res) {
     });
 
 });
-app.post('member/add', function(req,res){
+app.post('/member/add', function(req,res){
+  console.log('member/add called')
+
   var member = {
     first : req.body.fname,
     last:req.body.lname,
-    username : req.body.username,
-    password : req.body.password
+    usernames : req.body.username,
+    passwords : req.body.password
   }
-  console.log(member);
-  res.render('pages/AdminLogin',{
-    userValue : member,
-    my_title : "Login Page"
-  });
+
+  var insert_query = "INSERT INTO users(firstname, lastname, username, password) VALUES ('" + member.first  + "','" + member.last + "','" + member.usernames + "','" + member.passwords + "');";
+  console.log(insert_query);
+  db.task('get-everything', task => {
+        return task.batch([
+            task.any(insert_query),
+        ]);
+    })
+  res.redirect('/');
+
 })
 
 //app.listen(process.env.PORT);
